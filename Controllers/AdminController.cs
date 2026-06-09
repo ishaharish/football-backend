@@ -17,6 +17,13 @@ namespace football_backend.Controllers
             _pollService = pollService;
         }
 
+        [HttpGet("teams")]
+        public async Task<IActionResult> GetTeams()
+        {
+            var teams = await _pollService.GetAdminTeamsAsync();
+            return Ok(teams);
+        }
+
         [HttpPost("teams")]
         public async Task<IActionResult> AddTeam([FromBody] TeamCreateDto dto)
         {
@@ -29,6 +36,13 @@ namespace football_backend.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        [HttpDelete("teams/{id}")]
+        public async Task<IActionResult> DeleteTeam(int id)
+        {
+            await _pollService.DeleteTeamAsync(id);
+            return Ok(new { message = "Team deleted successfully." });
         }
 
         [HttpPost("toggle-results")]

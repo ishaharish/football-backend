@@ -26,6 +26,14 @@ namespace football_backend.Controllers
             return Ok(teams);
         }
 
+        [HttpGet("status")]
+        [AllowAnonymous]
+        public async Task<IActionResult> GetStatus()
+        {
+            var isPublic = await _pollService.IsResultPublicAsync();
+            return Ok(new { isPublic });
+        }
+
         [HttpPost("vote")]
         public async Task<IActionResult> CastVote([FromBody] VoteDto dto)
         {

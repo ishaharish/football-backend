@@ -41,6 +41,16 @@ namespace football_backend.Services
             };
         }
 
+        public async Task DeleteTeamAsync(int teamId)
+        {
+            var team = await _context.Teams.FindAsync(teamId);
+            if (team != null)
+            {
+                _context.Teams.Remove(team);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task ToggleResultVisibilityAsync()
         {
             var config = await _context.SystemConfigs.FirstOrDefaultAsync(c => c.Id == 1);
@@ -75,6 +85,19 @@ namespace football_backend.Services
                 TeamName = t.TeamName,
                 LogoUrl = t.LogoUrl,
                 VoteCount = isPublic ? t.VoteCount : 0 // Hide count if not public
+            });
+        }
+
+        public async Task<IEnumerable<TeamResponseDto>> GetAdminTeamsAsync()
+        {
+            var teams = await _context.Teams.ToListAsync();
+
+            return teams.Select(t => new TeamResponseDto
+            {
+                Id = t.Id,
+                TeamName = t.TeamName,
+                LogoUrl = t.LogoUrl,
+                VoteCount = t.VoteCount // Admins always see votes
             });
         }
 
